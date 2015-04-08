@@ -7,10 +7,11 @@ import org.apache.spark.streaming.StreamingContext
 case class SparkStreaming1(hostname: String, port: Int, sc: StreamingContext) {
 
   def process: Unit = {
-    /*
+
     sc.socketTextStream(hostname, port)
-      .xxx()
-    */
+      .map(ApacheAccessLog.parse)
+      .filter(_.code == 404)
+      .print
   }
 
 }

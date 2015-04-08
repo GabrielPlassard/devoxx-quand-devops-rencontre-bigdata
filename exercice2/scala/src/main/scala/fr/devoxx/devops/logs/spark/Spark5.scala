@@ -8,6 +8,8 @@ import org.apache.spark.util.StatCounter
 case class Spark5(rdd: RDD[String]) {
 
   def process: StatCounter = {
-    new StatCounter
+    rdd.map(ApacheAccessLog.parse)
+      .map(l => l.size)
+      .stats()
   }
 }

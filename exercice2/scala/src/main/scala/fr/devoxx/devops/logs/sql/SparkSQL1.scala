@@ -8,13 +8,11 @@ import org.apache.spark.sql.SQLContext
 case class SparkSQL1(rdd: RDD[String] , sqlContext: SQLContext) {
 
   def process: Long = {
-    val dataFrame = sqlContext.createDataFrame(rdd.map(ApacheAccessLog.parse));
-    dataFrame.registerTempTable("ApacheAccessLog");
+    val dataFrame = sqlContext.createDataFrame(rdd.map(ApacheAccessLog.parse))
+    dataFrame.registerTempTable("ApacheAccessLog")
 
-    /*
-    sqlContext.sql("select ...")
-      .xxx
-    */
-    0L
+    sqlContext.sql("select count(distinct(referer)) from ApacheAccessLog where code = 404")
+              .map(r => r.getLong(0))
+              .first
   }
 }

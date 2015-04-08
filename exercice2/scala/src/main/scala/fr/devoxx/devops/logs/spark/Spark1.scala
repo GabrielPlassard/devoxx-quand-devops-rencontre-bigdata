@@ -7,10 +7,10 @@ import org.apache.spark.rdd.RDD
 case class Spark1(rdd: RDD[String]) {
 
   def process: Long = {
-    /*
     rdd.map(ApacheAccessLog.parse)
-      .xxx
-    */
-    0L
+      .filter(_.code == 404)
+      .map(l => l.referer)
+      .distinct
+      .count
   }
 }

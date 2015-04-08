@@ -8,9 +8,11 @@ import org.apache.spark.sql.SQLContext
 case class SparkSQL3(rdd: RDD[String] , sqlContext: SQLContext) {
 
   def process: Array[(String, Long)] = {
-    val dataFrame = sqlContext.createDataFrame(rdd.map(ApacheAccessLog.parse));
-    dataFrame.registerTempTable("ApacheAccessLog");
+    val dataFrame = sqlContext.createDataFrame(rdd.map(ApacheAccessLog.parse))
+    dataFrame.registerTempTable("ApacheAccessLog")
 
-    Array(("", 0L))
+    sqlContext.sql("select agentFamily, count(*) as ct from ApacheAccessLog group by agentFamily order by ct desc limit 3")
+      .map(r => r.getString(0) -> r.getLong(1))
+      .collect
   }
 }

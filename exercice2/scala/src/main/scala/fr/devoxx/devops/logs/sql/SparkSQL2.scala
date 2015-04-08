@@ -11,6 +11,8 @@ case class SparkSQL2(rdd: RDD[String] , sqlContext: SQLContext) {
     val dataFrame = sqlContext.createDataFrame(rdd.map(ApacheAccessLog.parse));
     dataFrame.registerTempTable("ApacheAccessLog");
 
-    Array((0, 0L))
+    sqlContext.sql("select code, count(*) from ApacheAccessLog group by code")
+      .map(r => r.getInt(0) -> r.getLong(1))
+      .collect
   }
 }

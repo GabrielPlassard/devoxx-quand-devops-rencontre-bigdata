@@ -6,7 +6,10 @@ import org.apache.spark.rdd.RDD
 /* Top 3 des familles user agents */
 case class Spark3(rdd: RDD[String]) {
 
-  def process: Array[(String, Long)] = {
-    Array(("", 0L))
+  def process = {
+    rdd.map(ApacheAccessLog.parse)
+      .map(l => (l.agentFamily, 1))
+      .reduceByKey((a,b) => a + b)
+      .top(3)(Ordering.by(_._2))
   }
 }

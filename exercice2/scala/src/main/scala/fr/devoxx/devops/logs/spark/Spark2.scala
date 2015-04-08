@@ -6,7 +6,10 @@ import org.apache.spark.rdd.RDD
 /* Répartition des codes http */
 case class Spark2(rdd: RDD[String]) {
 
-  def process: Array[(Int, Long)] = {
-    Array((0, 0L))
+  def process = {
+    rdd.map(ApacheAccessLog.parse)
+        .map(l => (l.code, 1))
+        .reduceByKey((a,b) => a + b)
+        .collect
   }
 }
